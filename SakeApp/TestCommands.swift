@@ -1,0 +1,18 @@
+import Sake
+import SwiftShell
+
+@CommandGroup
+struct TestCommands {
+    public static var test: Command {
+        Command(
+            description: "Run tests with beautified logs",
+            dependencies: [MiseCommands.ensureXcbeautifyInstalled],
+            run: { context in
+                try await interruptableRunAndPrint(
+                    bash: "swift test | \(MiseCommands.miseBin(context)) exec -- xcbeautify --disable-logging",
+                    interruptionHandler: context.interruptionHandler
+                )
+            }
+        )
+    }
+}

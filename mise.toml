@@ -1,0 +1,9 @@
+[tools]
+"swiftformat" = "0.55.3"
+"xcbeautify" = "2.11.0"
+"gh" = "2.58.0"
+
+[settings]
+yes = true
+exec_auto_install = false
+status.missing_tools = "never"
