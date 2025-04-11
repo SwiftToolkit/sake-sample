@@ -1,0 +1,18 @@
+name: Setup Environment
+description: Sets up the environment for the workflow
+runs:
+  using: "composite"
+  steps:
+    - uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: 5.10
+    - name: Cache mise
+      uses: actions/cache@v4
+      with:
+        path: |
+          .mise
+          ~/.local/share/mise/installs
+        key: ${{ hashFiles('mise.toml') }}-${{ hashFiles('.mise/**') }}
+    - name: Setup Sake
+      id: setup-sake
+      uses: kattouf/setup-sake@v1

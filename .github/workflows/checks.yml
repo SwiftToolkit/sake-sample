@@ -1,0 +1,27 @@
+name: Checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+      - name: Run tests
+        run: sake test
+  lint:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+      - name: Run lint
+        run: sake lint
