@@ -19,7 +19,7 @@ struct ReleaseCommands {
 
     public static var githubRelease: Command {
         Command(
-            description: "Release",
+            description: "Create a GitHub release with binary artifacts",
             dependencies: [
                 bumpVersion,
                 buildReleaseArtifacts,
