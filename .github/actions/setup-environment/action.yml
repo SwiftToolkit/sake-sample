@@ -10,9 +10,8 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          .mise
           ~/.local/share/mise/installs
-        key: ${{ hashFiles('mise.toml') }}-${{ hashFiles('.mise/**/*') }}
+        key: ${{ hashFiles('mise.toml') }}
     - name: Setup Sake
       id: setup-sake
       uses: kattouf/setup-sake@v1
