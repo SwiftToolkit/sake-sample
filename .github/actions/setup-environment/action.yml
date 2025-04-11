@@ -12,7 +12,7 @@ runs:
         path: |
           .mise
           ~/.local/share/mise/installs
-        key: ${{ hashFiles('mise.toml') }}-${{ hashFiles('.mise/**') }}
+        key: ${{ hashFiles('mise.toml') }}-${{ hashFiles('.mise/**/*') }}
     - name: Setup Sake
       id: setup-sake
       uses: kattouf/setup-sake@v1
