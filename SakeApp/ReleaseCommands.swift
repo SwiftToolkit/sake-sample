@@ -23,7 +23,6 @@ struct ReleaseCommands {
             dependencies: [
                 bumpVersion,
                 buildReleaseArtifacts,
-                calculateBuildArtifactsSha256,
                 createAndPushTag,
                 draftReleaseWithArtifacts,
             ]
@@ -136,46 +135,6 @@ struct ReleaseCommands {
         )
     }
 
-    static var calculateBuildArtifactsSha256: Command {
-        @Sendable
-        func shasumFilePath(version: String) -> String {
-            ".build/artifacts/shasum-\(version)"
-        }
-
-        return Command(
-            description: "Calculate SHA-256 checksums for build artifacts",
-            skipIf: { context in
-                let arguments = try ReleaseArguments.parse(context.arguments)
-                try arguments.validate()
-                let version = arguments.version
-
-                let shasumFilePath = context.projectRoot + "/" + shasumFilePath(version: version)
-
-                return FileManager.default.fileExists(atPath: shasumFilePath)
-            },
-            run: { context in
-                let arguments = try ReleaseArguments.parse(context.arguments)
-                try arguments.validate()
-                let version = arguments.version
-
-                var shasumResults = [String]()
-                for target in Constants.buildTargets {
-                    let archivePath = executableArchivePath(target: target, version: version)
-                    let file = FileHandle(forReadingAtPath: context.projectRoot + "/" + archivePath)!
-                    let shasum = SHA256.hash(data: file.readDataToEndOfFile())
-                    let shasumString = shasum.compactMap { String(format: "%02x", $0) }.joined()
-                    shasumResults.append("\(shasumString)  \(archivePath)")
-                }
-                FileManager.default.createFile(
-                    atPath: context.projectRoot + "/" + shasumFilePath(version: version),
-                    contents: shasumResults.joined(separator: "\n").data(using: .utf8)
-                )
-
-                print("SHA-256 checksums calculated and saved to '\(String(describing: shasumFilePath))'")
-            }
-        )
-    }
-
     static var createAndPushTag: Command {
         Command(
             description: "Create and push a tag",
@@ -239,20 +198,19 @@ struct ReleaseCommands {
                 print("Drafting release \(arguments.version) on GitHub")
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
-                try await runAndPrint(
-                    MiseCommands.miseBin(context),
-                    "exec",
-                    "--",
-                    "gh",
-                    "release",
-                    "create",
-                    tagName,
-                    "\(context.projectRoot)/\(Constants.buildArtifactsDirectory)/*.zip",
-                    "--title",
-                    releaseTitle,
-                    "--draft",
-                    "--verify-tag"
-                )
+                let artifactsPaths = Constants.buildTargets
+                    .map { target in
+                        executableArchivePath(target: target, version: tagName)
+                    }
+                    .joined(separator: " ")
+                let draftReleaseCommand = try await """
+                \(MiseCommands.miseBin(context)) exec -- gh release create \(tagName) \(artifactsPaths) \
+                --title '\(releaseTitle)' \
+                --draft \
+                --verify-tag \
+                --generate-notes
+                """
+                try runAndPrint(bash: draftReleaseCommand)
             }
         )
     }
