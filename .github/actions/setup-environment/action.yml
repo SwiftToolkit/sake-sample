@@ -10,7 +10,7 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          ~/.local/share/mise/installs
+          $HOME/.local/share/mise/installs
         key: ${{ hashFiles('mise.toml') }}
     - name: Setup Sake
       id: setup-sake
