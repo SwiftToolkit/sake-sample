@@ -11,7 +11,7 @@ struct MiseCommands {
             return installPath
         }
 
-        print("Installing mise")
+        print("Installing mise".ansiBlue)
         try interruptableRunAndPrint(
             bash: "curl https://mise.run | MISE_VERSION=\(miseVersion) MISE_INSTALL_PATH=\(installPath) sh",
             interruptionHandler: context.interruptionHandler
@@ -27,7 +27,7 @@ struct MiseCommands {
                 try await run(miseBin(context), "which", "swiftformat").succeeded
             },
             run: { context in
-                print("Installing swiftformat")
+                print("Installing swiftformat".ansiBlue)
                 try await interruptableRunAndPrint(
                     miseBin(context), "install", "swiftformat",
                     interruptionHandler: context.interruptionHandler
@@ -43,7 +43,7 @@ struct MiseCommands {
                 try await run(miseBin(context), "which", "xcbeautify").succeeded
             },
             run: { context in
-                print("Installing xcbeautify")
+                print("Installing xcbeautify".ansiBlue)
                 try await interruptableRunAndPrint(
                     miseBin(context), "install", "xcbeautify",
                     interruptionHandler: context.interruptionHandler
@@ -59,7 +59,7 @@ struct MiseCommands {
                 try await run(miseBin(context), "which", "gh").succeeded
             },
             run: { context in
-                print("Installing gh")
+                print("Installing gh".ansiBlue)
                 try await interruptableRunAndPrint(
                     miseBin(context), "install", "gh",
                     interruptionHandler: context.interruptionHandler

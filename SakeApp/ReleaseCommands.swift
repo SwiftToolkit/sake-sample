@@ -40,7 +40,7 @@ struct ReleaseCommands {
                 let currentVersion = try String(contentsOfFile: versionFilePath)
                     .split(separator: "\"")[1]
                 if currentVersion == version {
-                    print("Version is already \(version). Skipping bumping...")
+                    print("Version is already \(version). Skipping bumping...".ansiBlue)
                     return true
                 } else {
                     return false
@@ -61,7 +61,7 @@ struct ReleaseCommands {
 
                 try runAndPrint("git", "add", versionFilePath)
                 try runAndPrint("git", "commit", "-m", "chore(release): Bump version to \(version)")
-                print("Version bumped to \(version)")
+                print("Version bumped to \(version)".ansiBlue)
             }
         )
     }
@@ -79,7 +79,7 @@ struct ReleaseCommands {
                     return FileManager.default.fileExists(atPath: archivePath)
                 }
                 if targetsWithExistingArtifacts.count == Constants.buildTargets.count {
-                    print("All artifacts already exist. Skipping build...")
+                    print("All artifacts already exist. Skipping build...".ansiBlue)
                     return true
                 } else {
                     context.storage["existing-artifacts-triples"] = targetsWithExistingArtifacts.map(\.triple)
@@ -99,11 +99,11 @@ struct ReleaseCommands {
                 let existingArtifactsTriples = context.storage["existing-artifacts-triples"] as? [String] ?? []
                 for target in Constants.buildTargets {
                     if existingArtifactsTriples.contains(target.triple) {
-                        print("Skipping \(target.triple) as artifacts already exist")
+                        print("Skipping \(target.triple) as artifacts already exist".ansiBlue)
                         continue
                     }
 
-                    print("Building executable for \(target.triple)")
+                    print("Building executable for \(target.triple)".ansiBlue)
                     try interruptableRunAndPrint("swift", "package", "clean", interruptionHandler: context.interruptionHandler)
 
                     let swiftBuildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", target.triple]
@@ -118,10 +118,10 @@ struct ReleaseCommands {
                     }
                     let executablePath = binPath + "/\(Constants.executableName)"
 
-                    print("Stripping executable for \(target.triple)")
+                    print("Stripping executable for \(target.triple)".ansiBlue)
                     try interruptableRunAndPrint("strip", "-rSTx", executablePath, interruptionHandler: context.interruptionHandler)
 
-                    print("Archiving executable for \(target.triple)")
+                    print("Archiving executable for \(target.triple)".ansiBlue)
                     let executableArchivePath = context.projectRoot + "/" + executableArchivePath(target: target, version: version)
                     try interruptableRunAndPrint(
                         "zip", "-j", executableArchivePath, executablePath,
@@ -129,7 +129,7 @@ struct ReleaseCommands {
                     )
                 }
 
-                print("Release artifacts built successfully at '\(Constants.buildArtifactsDirectory)'")
+                print("Release artifacts built successfully at '\(Constants.buildArtifactsDirectory)'".ansiBlue)
             }
         )
     }
@@ -145,7 +145,7 @@ struct ReleaseCommands {
 
                 let grepResult = run(bash: "git tag | grep \(arguments.version)")
                 if grepResult.succeeded {
-                    print("Tag \(version) already exists. Skipping creating tag...")
+                    print("Tag \(version) already exists. Skipping creating tag...".ansiBlue)
                     return true
                 } else {
                     return false
@@ -157,7 +157,7 @@ struct ReleaseCommands {
 
                 let version = arguments.version
 
-                print("Creating and pushing tag \(version)")
+                print("Creating and pushing tag \(version)".ansiBlue)
                 try runAndPrint("git", "tag", version)
                 try runAndPrint("git", "push", "origin", "tag", version)
                 try runAndPrint("git", "push") // push local changes like version bump
@@ -184,7 +184,7 @@ struct ReleaseCommands {
                     tagName
                 )
                 if ghViewResult.succeeded {
-                    print("Release \(tagName) already exists. Skipping...")
+                    print("Release \(tagName) already exists. Skipping...".ansiBlue)
                     return true
                 } else {
                     return false
@@ -194,7 +194,7 @@ struct ReleaseCommands {
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
-                print("Drafting release \(arguments.version) on GitHub")
+                print("Drafting release \(arguments.version) on GitHub".ansiBlue)
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let artifactsPaths = Constants.buildTargets
