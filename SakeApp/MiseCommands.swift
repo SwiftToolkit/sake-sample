@@ -12,12 +12,12 @@ struct MiseCommands {
             return installPath
         }
 
-        print("Installing mise".ansiBlue)
+        print("Installing mise at \(installPath)".ansiBlue)
         try interruptableRunAndPrint(
-            bash: "curl https://mise.run | MISE_VERSION=\(miseVersion) MISE_INSTALL_PATH=\(installPath) sh",
+            bash: "curl https://mise.run | MISE_VERSION=\(miseVersion) MISE_INSTALL_PATH=\"\(installPath)\" sh",
             interruptionHandler: context.interruptionHandler
         )
-        try runAndPrint(installPath, "trust", context.projectRoot)
+        try runAndPrint("\(installPath)", "trust", context.projectRoot)
         return installPath
     }
 

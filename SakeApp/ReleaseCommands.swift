@@ -207,7 +207,8 @@ struct ReleaseCommands {
                     }
                     .joined(separator: " ")
                 let ghReleaseCommand = try """
-                \(MiseCommands.miseBin(context)) exec -- gh release create \(tagName) \(artifactsPaths) \
+                "\(MiseCommands.miseBin(context))" exec -- gh release create \
+                \(tagName) \(artifactsPaths) \
                 --title '\(releaseTitle)' \
                 --draft \
                 --verify-tag \
