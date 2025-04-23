@@ -5,7 +5,8 @@ import SwiftShell
 @CommandGroup
 struct MiseCommands {
     static let miseVersion: String = "v2025.4.1"
-    static func miseBin(_ context: Command.Context) async throws -> String {
+
+    static func miseBin(_ context: Command.Context) throws -> String {
         let installPath = "\(context.projectRoot)/.mise/\(miseVersion)/mise"
         if FileManager.default.fileExists(atPath: installPath) {
             return installPath
@@ -24,11 +25,11 @@ struct MiseCommands {
         Command(
             description: "Ensure swiftformat is installed",
             skipIf: { context in
-                try await run(miseBin(context), "which", "swiftformat").succeeded
+                try run(miseBin(context), "which", "swiftformat").succeeded
             },
             run: { context in
                 print("Installing swiftformat".ansiBlue)
-                try await interruptableRunAndPrint(
+                try interruptableRunAndPrint(
                     miseBin(context), "install", "swiftformat",
                     interruptionHandler: context.interruptionHandler
                 )
@@ -40,11 +41,11 @@ struct MiseCommands {
         Command(
             description: "Ensure xcbeautify is installed",
             skipIf: { context in
-                try await run(miseBin(context), "which", "xcbeautify").succeeded
+                try run(miseBin(context), "which", "xcbeautify").succeeded
             },
             run: { context in
                 print("Installing xcbeautify".ansiBlue)
-                try await interruptableRunAndPrint(
+                try interruptableRunAndPrint(
                     miseBin(context), "install", "xcbeautify",
                     interruptionHandler: context.interruptionHandler
                 )
@@ -56,11 +57,11 @@ struct MiseCommands {
         Command(
             description: "Ensure gh is installed",
             skipIf: { context in
-                try await run(miseBin(context), "which", "gh").succeeded
+                try run(miseBin(context), "which", "gh").succeeded
             },
             run: { context in
                 print("Installing gh".ansiBlue)
-                try await interruptableRunAndPrint(
+                try interruptableRunAndPrint(
                     miseBin(context), "install", "gh",
                     interruptionHandler: context.interruptionHandler
                 )

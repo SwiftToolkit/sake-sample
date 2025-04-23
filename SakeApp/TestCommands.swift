@@ -8,7 +8,7 @@ struct TestCommands {
             description: "Run tests with beautified logs",
             dependencies: [MiseCommands.ensureXcbeautifyInstalled],
             run: { context in
-                try await interruptableRunAndPrint(
+                try interruptableRunAndPrint(
                     bash: "swift test | \(MiseCommands.miseBin(context)) exec -- xcbeautify --disable-logging",
                     interruptionHandler: context.interruptionHandler
                 )

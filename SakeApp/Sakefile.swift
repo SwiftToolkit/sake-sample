@@ -19,7 +19,7 @@ struct Commands: SakeApp {
             description: "Lint code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try await runAndPrint(
+                try runAndPrint(
                     MiseCommands.miseBin(context),
                     "exec",
                     "--",
@@ -36,7 +36,7 @@ struct Commands: SakeApp {
             description: "Format code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try await runAndPrint(
+                try runAndPrint(
                     MiseCommands.miseBin(context),
                     "exec",
                     "--",
